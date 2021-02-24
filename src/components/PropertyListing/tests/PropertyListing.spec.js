@@ -16,7 +16,7 @@ describe('PropertyListing', () => {
 
     it('should render five property cards', async () => {
         sinon.stub(global, 'fetch').resolves({
-            json: () => [...Array(5).keys()].map(()=>({
+            json: () => Array(5).fill({
                 id: 73864112,
                 bedrooms: 3,
                 summary: 'Property 1 Situated moments from the River Thames in Old Chelsea...',
@@ -28,16 +28,16 @@ describe('PropertyListing', () => {
                 contactUrl: '/property-for-sale/contactBranch.html?propertyId=73864112',
                 propertyTitle: '3 bedroom flat for sale',
                 mainImage: 'https://media.rightmove.co.uk/dir/crop/10:9-16:9/38k/37655/53588679/37655_CAM170036_IMG_01_0000_max_476x317.jpg'
-            }))
+            })
         })
 
         let wrapper
-        act(() => {
+        await act(async () => {
             wrapper = mount(<PropertyListing/>)
+            // flush promises
+            await new Promise(setImmediate);
         });
 
-        // flush promises
-        await new Promise(setImmediate);
         wrapper.update()
 
         expect(wrapper.find('.PropertyCard')).toHaveLength(5);
